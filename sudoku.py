@@ -1,7 +1,12 @@
 import numpy as np
+"""
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+первый индекс - индекс строки, второй - столбец
+board[3][7] - 4я строка, 8й столбец
+"""
 
+#функция вывода на экран матрицы 9 на 9
 def show(a):
-	#функция вывода на экран матрицы 9 на 9
 	for i in range(len(a)):
 		if(i==0):
 			print("<----------------------->")
@@ -10,17 +15,8 @@ def show(a):
 		print("|",a[i][0],a[i][1],a[i][2],"|",a[i][3],a[i][4],a[i][5],"|",a[i][6],a[i][7],a[i][8],"|")
 	print("<----------------------->\n")
 
-def update_q(q,b):
-	#обновляет матрицу достижимости меток, 1 если поле еще не заполнено, 0 если заполнено
-	for i in range(9):
-		for j in range(9):
-			if(b[i][j]==0):
-				q[i][j]=1
-			else:
-				q[i][j]=0
-	return q
+#функция соседства, выдает индексы соседей с элементом i,j
 def neighbor(i,j):
-	#функция соседства, выдает индексы соседей с элементом i,j
 	a=np.zeros((9,9),int)
 	for k in range(9):
 		for l in range(9):
@@ -47,13 +43,27 @@ def neighbor(i,j):
 	return a
 
 
+#обновляет функцию g, g[i][j][i1][j1][n] - элемент матрицы i,j достижим с i1, j1 по метке n
+def update_g(board,g):
+	for i in range(9):
+		for j in range(9):
+			sosedi=neighbor(i,j)
+			for i1 in range(9):
+				for j1 in range(9):
+					#для НЕсоседей убираем все связи
+					if(sosedi[i1][j1]==0):
+						for k1 in range(9):
+							g[i][j][i1][j1][k1]=0
 
-def g(board,q,g):
+					#для соседей заполненных убираем тоже все связи
+					if(sosedi[i1][j1]==1 and board[i1][j1]!=0):
+						for k2 in range(9):
+							g[i][j][i1][j1][k2]=0
 
-	for i in len(board):
-		for j in len(board[i]):
-			i=0
-	return 0
+					#для соседей НЕзаполненных убираем связь только текущей цифры
+					if(sosedi[i1][j1]==1 and board[i1][j1]==0):
+						g[i][j][i1][j1][board[i][j]-1]=0
+	return g
 
 board=np.array([
     [5, 3, 0,    0, 7, 0,    0, 0, 0],
@@ -68,10 +78,14 @@ board=np.array([
     [0, 0, 0,    4, 1, 9,    0, 0, 5],
     [0, 0, 0,    0, 8, 0,    0, 7, 9]
 ])
-q=np.ones((9,9),int)
-g=np.ones((9,9,9,9),int)
+
+g=np.ones((9,9,9,9,9),int)
+
+print("BOARD:")
 show(board)
-q=update_q(q,board)
-show(q)
-#show(g)
-show(neighbor(3,5))
+
+
+#print("neighbor(3,7):")
+#show(neighbor(3,7))
+g=update_g(board,g)
+print(g[0][1][0][2])
