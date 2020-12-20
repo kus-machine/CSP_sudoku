@@ -95,7 +95,29 @@ def update_g_q(board,g,q):
 
 	return g,q
 
+def simple_solve(board):
+	q=np.ones((9,9,9),int)
+	g=np.ones((9,9,9,9,9,9),int)
+	show(board)
+	g,q=update_g_q(board,g,q)
+	it=0
+	while(True):
+		#костыль, в одну строку нельзя "запомнить" последний массив и чтобы не было выхода из цикла
+		q1=q+1
+		q2=q1-1
+		for i in range(9):
+			for j in range(9):
+				if(q[i][j].sum()==1):
+					board[i][j]=int(np.nonzero(q[i][j])[0])+1
+					q[i][j]=0
+		it+=1
+		print("ITERATION ",it)
+		show(board)
+		g,q=update_g_q(board,g,q)
 
+		if(np.array_equal(q2,q)):
+			print("q({0})=q({1})".format(it,it-1))
+			break
 
 
 board=np.array([
@@ -136,28 +158,7 @@ board1=np.array([
     [6,9,1,4,2,3,7,5,0]])
 
 
-q=np.ones((9,9,9),int)
-g=np.ones((9,9,9,9,9,9),int)
-q_ideal=np.zeros((9,9,9),int)
-show(board)
-g,q=update_g_q(board,g,q)
-it=0
-while(True):
-	#костыль, в одну строку нельзя "запомнить" последний массив и чтобы не было выхода из цикла
-	q1=q+1
-	q2=q1-1
-	for i in range(9):
-		for j in range(9):
-			if(q[i][j].sum()==1):
-				board[i][j]=int(np.nonzero(q[i][j])[0])+1
-				q[i][j]=0
-	it+=1
-	print("ITERATION ",it)
-	show(board)
-	g,q=update_g_q(board,g,q)
-	if(np.array_equal(q2,q)):
-		print("q({0})=q({1})".format(it,it-1))
-		break
+simple_solve(board)
 
 
 
