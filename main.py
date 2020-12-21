@@ -43,10 +43,6 @@ board2=np.array([
     [6,9,1,4,2,3,7,5,0]])
 
 
-q=np.ones((9,9,9),int)
-update_q(board,q)
-#print(q)
-#print(check(board))
-#print(solve(board5))
-#solve(board1)
-#solve(board2)
+
+solve(board)
+solve(board2)
