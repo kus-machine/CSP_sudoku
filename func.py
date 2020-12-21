@@ -178,26 +178,25 @@ def update_q(board,q):
 		[0, 0, 0, 0, 0, 0, 0, 1, 0]]])
 
 	'''
-	#все qt(k) где k - заполнено - ставим в 0
+	#все qt(k) где k - заполнено - ставим в 0 (кроме заполненного)
 	for i in range(9):
 		for j in range(9):
 			if(board[i][j]!=0):
 				for l in range(9):
-					q[i][j][l]=0
+					if(board[i][j]-1!=l):
+						q[i][j][l]=0
 	#фиксируем элемент с доски
 	for i1 in range(9):
 		for j1 in range(9):
 			#находим для него всех соседей
 			sosed=neighbor(i1,j1)
 			#проходимся по всем незаполненным соседям для фиксированого выше элемента и деактивируем у них метки с числом как у фиксированного выше элемента
-			for i2 in range(9):
-				for j2 in range(9):
-					if(board[i1][j1]!=0 and sosed[i2][j2]==1):
-						if(board[i2][j2]==0):
+			if(board[i1][j1]!=0):
+				for i2 in range(9):
+					for j2 in range(9):
+						if(sosed[i2][j2]==1 and board[i2][j2]==0):
 							for k1 in range(9):
-								for k2 in range(9):
-									if(k1!=board[i1][j1]-1 or k2==board[i1][j1]-1):
-										q[i2][j2][board[i1][j1]-1]=0
+								q[i2][j2][board[i1][j1]-1]=0
 	return q
 #функция решения
 def solve(board):
@@ -297,4 +296,4 @@ def solve(board):
 					print("однозначное решение не найдено")
 				break
 	return board
-doctest.testmod()
+#doctest.testmod()
