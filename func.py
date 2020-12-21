@@ -285,7 +285,6 @@ def solve(board):
 				for j in range(9):
 					if(q[i][j].sum()==1):
 						board[i][j]=int(np.nonzero(q[i][j])[0])+1
-						q[i][j]=0
 			it+=1
 			print("ITERATION ",it)
 			show(board)
