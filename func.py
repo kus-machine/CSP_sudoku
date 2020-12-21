@@ -68,7 +68,7 @@ def create_q(board):
 						q[i][j][l]=0
 	return q
 #возвращает 0 если задача НЕрешаема
-def sertif(q):
+def check(q):
 	flag=1
 	#фиксируем объект(клетку)
 	for i in range(9):
@@ -77,7 +77,6 @@ def sertif(q):
 			#по всем соседям этого объекта (кроме него самого)
 			for i1 in range(9):
 				for j1 in range(9):
-
 					if(sosedi[i1][j1]==1 and (i!=i1 or j!=j1)):
 						#по всем ненулевым меткам фикс объекта:
 						flag1=0
@@ -114,7 +113,7 @@ def update_q(q):
 						if(sosed[i2][j2]==1 and q[i2][j2].sum()>1):
 							q[i2][j2][int(np.nonzero(q[i][j])[0])]=0
 	return q
-
+#делает доступную  доску из q
 def make_board(q):
 	board=np.zeros((9,9),int)
 	for i in range(9):
@@ -122,22 +121,30 @@ def make_board(q):
 			if(q[i][j].sum()==1):
 				board[i][j]=int(np.nonzero(q[i][j])[0])+1
 	return board
-#подфункция решения, 
+#подфункция решения с запоминанием разметки
 def pod_solve(board):
 	#reserv copy of board
-	
 	q=create_q(board)
 	q=update_q(q)
 	for i in range(9):
 		for j in range(9):
 			if(q[i][j].sum()>1):
-				for k in range(len(np.nonzero(q[i][j])[0])):
-					board[i][j]=np.nonzero(q[i][j])[0][k]+1
-					if(solve(board)):
-						return board
-						break
-					else:
-						continue
+				q_temp=q[i][j]
+				for k in range(9):
+					if(q[i][j][k]==1):
+						for l in range(9):
+							if(l!=k):
+								q[i][j][l]=0
+							else:
+								temp_k=l
+				board=make_board(q)
+				if(solve(board)):
+					return board
+					break
+				else:
+					q[i][j]=q_temp
+					q[i][j][temp_k]=0
+					continue
 	return board
 def solve(board):
 	print("Condition:")
@@ -147,8 +154,8 @@ def solve(board):
 	solved=False
 	while(True):
 		if(q.sum()!=81):
-			if(sertif(q)):
-				#print("Iteration ",it, "; Certificate is 1")
+			if(check(q)):
+				print("Iteration ",it)
 				q1=q+1
 				q2=q1-1
 				q=update_q(q)
@@ -156,14 +163,14 @@ def solve(board):
 				show(board)
 				it+=1
 				if(np.array_equal(q2,q)):
-					#print("q({0})=q({1})".format(it,it-1))
+					print("q({0})=q({1})".format(it,it-1))
 					if(solved==False):
 						board=pod_solve(board)
 						#show(board)
 						solved=True
 					break
 			else:
-				print("Certificate is 0")
+				print("Check is 0")
 				break
 		else:
 			print("SOLVED!")
