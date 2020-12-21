@@ -115,30 +115,60 @@ def update_q(q):
 							q[i2][j2][int(np.nonzero(q[i][j])[0])]=0
 	return q
 
+def make_board(q):
+	board=np.zeros((9,9),int)
+	for i in range(9):
+		for j in range(9):
+			if(q[i][j].sum()==1):
+				board[i][j]=int(np.nonzero(q[i][j])[0])+1
+	return board
+#подфункция решения, 
+def pod_solve(board):
+	#reserv copy of board
+	
+	q=create_q(board)
+	q=update_q(q)
+	for i in range(9):
+		for j in range(9):
+			if(q[i][j].sum()>1):
+				for k in range(len(np.nonzero(q[i][j])[0])):
+					board[i][j]=np.nonzero(q[i][j])[0][k]+1
+					if(solve(board)):
+						return board
+						break
+					else:
+						continue
+	return board
 def solve(board):
 	print("Condition:")
 	show(board)
 	q=create_q(board)
-	q=update_q(q)
-	it=0
+	it=1
+	solved=False
 	while(True):
-		if(sertif(q)):
-			print("Iteration ",it)
-			print("Sertificate is 1")
-			q1=q+1
-			q2=q1-1
-			q=update_q(q)
-			for i in range(9):
-				for j in range(9):
-					if(q[i][j].sum()==1):
-						board[i][j]=int(np.nonzero(q[i][j])[0])+1
-			show(board)
-			it+=1
-			if(np.array_equal(q2,q)):
-				print("q({0})=q({1})".format(it,it-1))
-				#show(board)
+		if(q.sum()!=81):
+			if(sertif(q)):
+				#print("Iteration ",it, "; Certificate is 1")
+				q1=q+1
+				q2=q1-1
+				q=update_q(q)
+				board=make_board(q)
+				show(board)
+				it+=1
+				if(np.array_equal(q2,q)):
+					#print("q({0})=q({1})".format(it,it-1))
+					if(solved==False):
+						board=pod_solve(board)
+						#show(board)
+						solved=True
+					break
+			else:
+				print("Certificate is 0")
 				break
 		else:
-			print("Sertificate is 0")
+			print("SOLVED!")
+			show(board)
+			solved=True
 			break
+	return solved
 #doctest.testmod()
