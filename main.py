@@ -41,7 +41,20 @@ board2=np.array([
     [2,7,4,6,8,5,3,9,1],
     [8,3,5,1,9,7,6,2,4],
     [6,9,1,4,2,3,7,5,0]])
-board6=np.array([
+
+board3=np.array([
+    [1, 2, 3,    4, 5, 6,    7, 8, 0],
+    [0, 0, 0,    0, 0, 0,    0, 0, 0],
+    [0, 0, 0,    0, 0, 0,    0, 0, 0],
+
+    [0, 0, 0,    0, 0, 0,    0, 0, 0],
+    [0, 0, 0,    0, 0, 0,    0, 0, 0],
+    [0, 0, 0,    0, 0, 0,    0, 0, 0],
+
+    [0, 0, 0,    0, 0, 0,    0, 0, 0],
+    [0, 0, 0,    0, 0, 0,    0, 0, 0],
+    [0, 0, 0,    0, 0, 0,    0, 0, 0]])
+board4=np.array([
     [1, 2, 3,    4, 5, 6,    7, 8, 0],
     [0, 0, 0,    0, 0, 0,    0, 0, 9],
     [0, 0, 0,    0, 0, 0,    0, 0, 0],
@@ -55,6 +68,21 @@ board6=np.array([
     [0, 0, 0,    0, 0, 0,    0, 0, 0]])
 
 
+q1=np.ones((9,9,9),int)
+q1=update_q(board,q1)
+show(board)
+print(sertif(q1))
 
+q2=np.ones((9,9,9),int)
+q2=update_q(board3,q2)
+show(board3)
+print(sertif(q2))
 
-solve(board)
+q3=np.ones((9,9,9),int)
+q3=update_q(board4,q3)
+show(board4)
+print(sertif(q3))
+#solve(board)
+#solve(board1)
+#solve(board2)
+#solve(board3)
