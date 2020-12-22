@@ -77,5 +77,5 @@ board5=np.array([
     [0, 0, 0,    0, 7, 0,    0, 4, 2]
 ])
 
+
 solve(board5)
-#solve(board4)
