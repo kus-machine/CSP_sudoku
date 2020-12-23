@@ -159,23 +159,8 @@ def check(q):
 	#фиксируем объект(клетку)
 	for i in range(9):
 		for j in range(9):
-			sosedi=neighbor(i,j)
 			if(q[i][j].sum()==0):
 				flag=0
-			#по всем соседям этого объекта (кроме него самого)
-			'''
-			for i1 in range(9):
-				for j1 in range(9):
-					if(sosedi[i1][j1]==1 and (i!=i1 or j!=j1)):
-						#по всем ненулевым меткам фикс объекта:
-						flag1=0
-						for l in range(9):
-							#по всем меткам соседей фикс объекта:
-							for l1 in range(9):
-								if(l!=l1 and q[i][j][l]*q[i1][j1][l1]==1):
-									flag1=1
-						flag*=flag1'''
-			
 	return flag
 
 #вычеркивание
@@ -214,18 +199,31 @@ def update_q(q):
 				for i2 in range(9):
 					for j2 in range(9):
 						if(sosed[i2][j2]==1 and (not(i==i2 and j==j2))):
-							#занулить значения в точке где у фикс - 1
 							q[i2][j2][np.nonzero(q[i][j])[0][0]]=0
 	return q
 
-#doctest.testmod()
+
 #алгоритм вычеркивания
 def simple_solve(q):
+	'''
+	>>> q=create_q(np.zeros((9,9),int))
+	>>> simple_solve(q)
+	3
+	>>> a=np.zeros((9,9),int)
+	>>> a[0]=[1,2,3,4,5,6,7,8,0]
+	>>> a[1]=[0,0,0,0,0,0,0,0,9]
+	>>> simple_solve(create_q(a))
+	2
+	'''
 	solved=0
+	#print("CONDITION")
+	#show(make_board(q))
+	q=update_q(q)
 	if(check(q)==0):
 		solved=2
 		#print("Zadacha ne reshaema")
 	else:
+		it=0
 		while(solved==0):
 			if(q.sum()==81):
 				solved=1
@@ -238,10 +236,13 @@ def simple_solve(q):
 				q=update_q(q)
 				if(np.all(q1==q)):
 					#print("q({0})=q({1})".format(it+1,it))
+					#print("q = q_prev")
+					#show(make_board(q))
 					solved=3
 					break
 	#show(make_board(q))
 	return solved
+
 #алгоритм решения, пробует подставлять в неопределившиеся объекты конкретные цифры, идет дальше или откатывается назад
 def hard_solve(q):
 	print("CONDITION")
@@ -259,7 +260,6 @@ def hard_solve(q):
 				if(q[i][j].sum()>1):
 					q_copy=q[i][j].copy()
 					q_temp=q[i][j].copy()
-					#сделали копию объекта. теперь нужно проверить, для каких меток "точно нет"
 					for k in range(9):
 						if(q_copy[k]==1):
 							for k1 in range(9):
@@ -277,3 +277,5 @@ def hard_solve(q):
 					if(check(q)):
 						q=hard_solve(q)
 	return q
+
+doctest.testmod()

@@ -1,6 +1,6 @@
 import numpy as np
 import doctest
-from func import create_q, hard_solve
+from func import create_q, hard_solve, simple_solve
 
 #условие для которого будет решение (с гугл диска)
 board=np.array([
@@ -69,4 +69,5 @@ board5=np.array([
 ])
 
 
+simple_solve(create_q(board5))
 hard_solve(create_q(board5))
