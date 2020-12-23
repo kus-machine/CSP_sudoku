@@ -277,5 +277,5 @@ def hard_solve(q):
 					if(check(q)):
 						q=hard_solve(q)
 	return q
-
-doctest.testmod()
+if __name__ == '__main__':
+	doctest.testmod()
