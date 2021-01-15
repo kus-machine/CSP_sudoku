@@ -1,6 +1,6 @@
 import numpy as np
 import doctest
-from func import create_q, hard_solve, simple_solve
+from func import create_q, hard_solve, simple_solve, show, make_board
 
 #условие для которого будет решение (с гугл диска)
 board=np.array([
@@ -68,6 +68,8 @@ board5=np.array([
     [0, 0, 0,    0, 7, 0,    0, 4, 2]
 ])
 
-
-simple_solve(create_q(board5))
-hard_solve(create_q(board5))
+massive=[board,board5,board1,board2,board3,board0]
+#simple_solve(create_q(board5))
+for i in range(200):
+    q=hard_solve(create_q(massive[np.random.randint(len(massive))]))
+    show(make_board(q))

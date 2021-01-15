@@ -1,5 +1,6 @@
 import numpy as np
 import doctest
+from numba import njit, int16
 
 #делает доступную  доску из q
 def make_board(q):
@@ -65,6 +66,7 @@ def show(a):
 		return True
 
 #функция соседства, выдает матрицу, еденицы в которой - соседи с элементом i,j
+@njit(cache=True)
 def neighbor(i,j):
 	'''
 	функция соседства, выдает матрицу, еденицы в которой - соседи с элементом i,j
@@ -79,7 +81,7 @@ def neighbor(i,j):
 	       [1, 0, 0, 0, 0, 0, 0, 0, 0],
 	       [1, 0, 0, 0, 0, 0, 0, 0, 0]])
 	'''
-	a=np.zeros((9,9),int)
+	a=np.zeros((9,9),np.int8)
 	for k in range(9):
 		for l in range(9):
 			if(k==i or l==j):
@@ -105,6 +107,7 @@ def neighbor(i,j):
 	return a
 
 #создает начальную разметку из условия
+@njit(cache=True)
 def create_q(board):
 	'''
 	full filled board:
@@ -128,7 +131,7 @@ def create_q(board):
 	>>> create_q(b)[0][1]
 	array([1, 1, 1, 1, 1, 1, 1, 1, 1])
 	'''
-	q=np.ones((9,9,9),int)
+	q=np.ones((9,9,9),np.int8)
 	#все qt(k) где k - заполнено - ставим в 0 (кроме заполненного)
 	for i in range(9):
 		for j in range(9):
@@ -139,6 +142,7 @@ def create_q(board):
 	return q
 
 #возвращает 0 если задача НЕрешаема
+@njit(cache=True)
 def check(q):
 	'''
 	give a wrong board:
@@ -161,9 +165,11 @@ def check(q):
 		for j in range(9):
 			if(q[i][j].sum()==0):
 				flag=0
+				break
 	return flag
 
 #вычеркивание
+@njit(cache=True)
 def update_q(q):
 	'''
 	>>> a=np.zeros((9,9),int)
@@ -199,11 +205,15 @@ def update_q(q):
 				for i2 in range(9):
 					for j2 in range(9):
 						if(sosed[i2][j2]==1 and (not(i==i2 and j==j2))):
-							q[i2][j2][np.nonzero(q[i][j])[0][0]]=0
+							for k in range(9):
+								if(q[i][j][k]==1):
+									q[i2][j2][k]=0
+									break
 	return q
 
 
 #алгоритм вычеркивания
+@njit(cache=True)
 def simple_solve(q):
 	'''
 	>>> q=create_q(np.zeros((9,9),int))
@@ -228,13 +238,12 @@ def simple_solve(q):
 			if(q.sum()==81):
 				solved=1
 				#print("SOLVED!")
-				show(make_board(q))
+				#show(make_board(q))
 				break
 			else:
-				q_temp=q+1
-				q1=q_temp-1
+				q_temp=q.copy()
 				q=update_q(q)
-				if(np.all(q1==q)):
+				if(np.all(q_temp==q)):
 					#print("q({0})=q({1})".format(it+1,it))
 					#print("q = q_prev")
 					#show(make_board(q))
@@ -244,16 +253,20 @@ def simple_solve(q):
 	return solved
 
 #алгоритм решения, пробует подставлять в неопределившиеся объекты конкретные цифры, идет дальше или откатывается назад
+@njit(cache=True)
 def hard_solve(q):
-	print("CONDITION")
-	show(make_board(q))
+	#print("CONDITION")
+	#show(make_board(q))
 	if(simple_solve(q)==1):
+		
 		print("FULL SOLVED! :D")
 	elif(simple_solve(q)==2):
+		
 		print("CAN NOT SOLVE ;(")
 	else:
-		print("CONTINUE SOLVING...")
-		show(make_board(q))
+		
+		#print("CONTINUE SOLVING...")
+		#show(make_board(q))
 		global_q_temp=q.copy()
 		for i in range(9):
 			for j in range(9):
@@ -277,5 +290,5 @@ def hard_solve(q):
 					if(check(q)):
 						q=hard_solve(q)
 	return q
-if __name__ == '__main__':
-	doctest.testmod()
+'''if __name__ == '__main__':
+	doctest.testmod()'''

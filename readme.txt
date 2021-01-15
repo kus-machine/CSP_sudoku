@@ -1,0 +1,1 @@
+https://github.com/kus-machine/CSP_sudoku
